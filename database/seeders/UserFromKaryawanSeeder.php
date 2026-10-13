@@ -19,7 +19,7 @@ class UserFromKaryawanSeeder extends Seeder
                 [
                     'name' => $karyawan->nama_lengkap,
                     'email' => $karyawan->nip . '@internal.local',
-                    'password' => Hash::make('CHANGE_ME_BEFORE_DEPLOY'),
+                    'password' => Hash::make('password'),
                     'role' => 'staff',
                 ]
             );

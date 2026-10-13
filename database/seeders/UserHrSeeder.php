@@ -14,7 +14,7 @@ class UserHrSeeder extends Seeder
             'name' => 'HR Ekafarm',
             'nip' => 'HR',
             'email' => 'hr@ekafarm.local',
-            'password' => Hash::make('CHANGE_ME_BEFORE_DEPLOY'),
+            'password' => Hash::make('password'),
             'role' => 'hr',
         ]);
     }

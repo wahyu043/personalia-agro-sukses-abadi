@@ -33,7 +33,7 @@ class UserAtasanSeeder extends Seeder
                 'name' => $user['name'],
                 'nip' => $user['nip'],
                 'email' => $user['email'],
-                'password' => Hash::make('CHANGE_ME_BEFORE_DEPLOY'),
+                'password' => Hash::make('password'),
                 'role' => 'atasan',
             ]);
         }
