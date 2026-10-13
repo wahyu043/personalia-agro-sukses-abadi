@@ -49,7 +49,7 @@ class KaryawanController extends Controller
             'nip'      => $karyawan->nip,
             'email'    => $namapertama . '.staff@ekafarm.local',
             'role'     => $validated['role'],
-            'password' => Hash::make('CHANGE_ME_BEFORE_DEPLOY'),
+            'password' => Hash::make(config('hr.default_password')),
         ]);
 
         return redirect()
@@ -98,12 +98,12 @@ class KaryawanController extends Controller
         $karyawan = Karyawan::findOrFail($id);
         $user = User::where('nip', $karyawan->nip)->firstOrFail();
 
-        $user->password = Hash::make('CHANGE_ME_BEFORE_DEPLOY');
+        $user->password = Hash::make(config('hr.default_password'));
         $user->save();
 
         return redirect()
             ->route('hr.karyawan.index')
-            ->with('success', 'Password ' . $karyawan->nama_lengkap . ' telah direset ke "CHANGE_ME_BEFORE_DEPLOY".');
+            ->with('success', 'Password ' . $karyawan->nama_lengkap . ' telah direset ke password default.');
     }
 
     public function destroy($id)

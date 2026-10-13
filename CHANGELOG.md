@@ -206,7 +206,7 @@
 - Halaman Daftar Karyawan dengan tabel interaktif (No, Nama, NIP, Email, Role, Aksi).
 - Fitur Tambah & Edit Data dengan validasi input.
 - Modal Konfirmasi Penghapusan reusable `<x-confirm-delete>`.
-- **Super Reset Password (HR Only)**: reset password karyawan ke default (`CHANGE_ME_BEFORE_DEPLOY`) via modal `<x-confirm-reset>`.
+- **Super Reset Password (HR Only)**: reset password karyawan ke password default (diatur lewat `DEFAULT_USER_PASSWORD` di `.env`) via modal `<x-confirm-reset>`.
 
 ---
 
