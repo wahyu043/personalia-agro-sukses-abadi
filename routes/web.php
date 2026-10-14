@@ -41,7 +41,6 @@ Route::middleware(['auth', 'role:staff'])->group(function () {
     Route::get('/karyawan/cuti', [CutiController::class, 'index'])->name('karyawan.cuti.index');
     Route::get('/karyawan/cuti/create', [CutiController::class, 'create'])->name('karyawan.cuti.create');
     Route::post('/karyawan/cuti/store', [CutiController::class, 'store'])->name('karyawan.cuti.store');
-    Route::get('/cuti/{id}', [CutiController::class, 'show'])->name('cuti.show');
 });
 
 
@@ -53,8 +52,6 @@ Route::middleware(['auth', 'role:hr'])->group(function () {
     Route::get('/hr/dashboard', [HRDashboardController::class, 'index'])
         ->name('hr.dashboard');
     Route::get('/hr/cuti', [CutiController::class, 'indexHr'])->name('hr.cuti.index');
-    Route::post('/hr/cuti/{id}/status', [CutiController::class, 'updateStatus'])
-        ->name('hr.cuti.updateStatus');
     Route::resource('hr/karyawan', KaryawanController::class)
         ->names('hr.karyawan')
         ->parameters(['karyawan' => 'karyawan_id']);
