@@ -104,7 +104,12 @@ class CutiController extends Controller
             ->latest()
             ->get();
 
-        return view('hr.cuti.index', compact('cuti', 'cutiDisetujui', 'countMenunggu', 'countDisetujui', 'countDitolak'));
+        $cutiDitolak = Cuti::with(['user.karyawan'])
+            ->where('status', 'ditolak')
+            ->latest()
+            ->get();
+
+        return view('hr.cuti.index', compact('cuti', 'cutiDisetujui', 'cutiDitolak', 'countMenunggu', 'countDisetujui', 'countDitolak'));
     }
 
 
