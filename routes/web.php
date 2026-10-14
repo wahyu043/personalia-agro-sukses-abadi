@@ -72,7 +72,6 @@ Route::middleware(['auth', 'role:hr'])->group(function () {
 
     Route::post('/hr/cuti/{id}/approve', [CutiController::class, 'approveHr'])
         ->name('hr.cuti.approve');
-    Route::post('/hr/cuti/{id}/approve', [CutiController::class, 'approveHr'])->name('hr.cuti.approve');
     Route::post('/hr/cuti/{id}/reject', [CutiController::class, 'rejectHr'])->name('hr.cuti.reject');
 });
 
@@ -87,6 +86,8 @@ Route::middleware(['auth', 'role:atasan'])->group(function () {
         ->name('atasan.cuti.index');
     Route::post('/atasan/cuti/{id}/approve', [CutiController::class, 'approveAtasan'])
         ->name('atasan.cuti.approve');
+    Route::post('/atasan/cuti/{id}/reject', [CutiController::class, 'rejectAtasan'])
+        ->name('atasan.cuti.reject');
 });
 
 

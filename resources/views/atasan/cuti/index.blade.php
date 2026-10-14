@@ -34,14 +34,26 @@
                             {{ $item->alasan }}
                         </td>
                         <td class="p-2 border text-center">
-                            <form method="POST"
-                                action="{{ route('atasan.cuti.approve', $item->id) }}">
-                                @csrf
-                                <button
-                                    class="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">
-                                    Approve
-                                </button>
-                            </form>
+                            <div class="flex items-center justify-center gap-2">
+                                <form method="POST"
+                                    action="{{ route('atasan.cuti.approve', $item->id) }}">
+                                    @csrf
+                                    <button
+                                        class="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">
+                                        Approve
+                                    </button>
+                                </form>
+
+                                <form method="POST"
+                                    action="{{ route('atasan.cuti.reject', $item->id) }}"
+                                    onsubmit="return confirm('Tolak pengajuan cuti ini?')">
+                                    @csrf
+                                    <button
+                                        class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">
+                                        Tolak
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     @endforeach

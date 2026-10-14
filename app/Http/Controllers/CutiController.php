@@ -143,24 +143,60 @@ class CutiController extends Controller
         return view('atasan.cuti.index', compact('cuti', 'riwayat'));
     }
 
-    // Melihat status pengajuan 
+    private function divisiAtasan(): ?string
+    {
+        return match (auth()->user()->nip) {
+            'SPV-PROD' => 'Produksi',
+            'SPV-KEU'  => 'Keuangan',
+            'SPV-MKT'  => 'Marketing',
+            'SPV-GUD'  => 'Gudang',
+            default    => null,
+        };
+    }
+
+    private function cutiDivisiAtasan($id): Cuti
+    {
+        $cuti = Cuti::with('user.karyawan')->findOrFail($id);
+        $divisi = $this->divisiAtasan();
+
+        abort_if($divisi === null || $cuti->user?->karyawan?->divisi !== $divisi, 403);
+
+        return $cuti;
+    }
 
     public function approveAtasan($id)
     {
-        $cuti = Cuti::findOrFail($id);
+        $cuti = $this->cutiDivisiAtasan($id);
 
-        $cuti->update([
-            'status' => 'menunggu_hr',
-        ]);
+        if ($cuti->status !== 'menunggu_atasan') {
+            return back()->with('error', 'Pengajuan ini sudah diproses.');
+        }
+
+        $cuti->update(['status' => 'menunggu_hr']);
 
         return back()->with('success', 'Pengajuan diteruskan ke HR.');
     }
 
-    // Approve by HR
+    public function rejectAtasan($id)
+    {
+        $cuti = $this->cutiDivisiAtasan($id);
+
+        if ($cuti->status !== 'menunggu_atasan') {
+            return back()->with('error', 'Pengajuan ini sudah diproses.');
+        }
+
+        $cuti->update(['status' => 'ditolak']);
+
+        return back()->with('success', 'Pengajuan cuti ditolak.');
+    }
 
     public function approveHr($id)
     {
         $cuti = Cuti::findOrFail($id);
+
+        if ($cuti->status !== 'menunggu_hr') {
+            return back()->with('error', 'Pengajuan ini tidak sedang menunggu HR.');
+        }
 
         $cuti->update([
             'status' => 'disetujui',
@@ -171,10 +207,14 @@ class CutiController extends Controller
         return back()->with('success', 'Pengajuan cuti disetujui.');
     }
 
-    // Reject by HR
     public function rejectHr($id)
     {
         $cuti = Cuti::findOrFail($id);
+
+        if ($cuti->status !== 'menunggu_hr') {
+            return back()->with('error', 'Pengajuan ini tidak sedang menunggu HR.');
+        }
+
         $cuti->update(['status' => 'ditolak']);
 
         return back()->with('success', 'Pengajuan cuti ditolak.');
