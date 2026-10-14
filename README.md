@@ -1,159 +1,130 @@
-# 🧭 Personalia Ekafarm PROD
+# 🌿 Personalia Agro Sukses Abadi - Leave Management System
 
-**Personalia Ekafarm PROD** adalah sistem internal berbasis web untuk mengelola data cuti karyawan di lingkungan **CV. Agro Sukses Abadi (Ekafarm)**.  
-Aplikasi ini dibangun dari nol menggunakan **Laravel 12** dan **Tailwind CSS v4**, ditujukan untuk digitalisasi manajemen SDM serta menjadi _legacy project_ pribadi pengembang.
+Sistem manajemen cuti karyawan berbasis web untuk lingkungan **Agro Sukses Abadi**. Proses pengajuan cuti yang sebelumnya dikelola lewat Google Docs dipindahkan ke aplikasi yang dihosting sendiri, supaya manajemen punya gambaran terpusat tentang siapa yang sedang atau akan cuti, dan karyawan bisa melihat sisa cutinya dalam setahun.
 
----
+Dibangun dari nol dengan **Laravel 12** dan **Tailwind CSS v4**. Seluruh data pada repositori ini adalah **data dummy**.
 
-## 🚀 Fitur Utama (Versi v0.5.2)
-
-| Status | Fitur                                            | Keterangan                                                         |
-| :----: | :----------------------------------------------- | :----------------------------------------------------------------- |
-|   ✅   | Setup Laravel 12 + Tailwind v4                   | Struktur proyek dasar & integrasi Vite berjalan stabil             |
-|   ✅   | Autentikasi multi-role (HR & Karyawan)           | Login, register, dan middleware `role` berjalan sempurna           |
-|   ✅   | Dashboard Karyawan Dinamis                       | Statistik & riwayat pengajuan cuti ditarik langsung dari database  |
-|   ✅   | Dashboard HR                                     | Menampilkan rekap global pengajuan, status, dan tombol cetak PDF   |
-|   ✅   | Sistem Cetak PDF Surat Cuti                      | Format surat resmi A4 dengan area tanda tangan dan catatan manajer |
-|   ✅   | CRUD Data Karyawan (HR)                          | HR dapat menambah, edit, hapus, dan reset password karyawan        |
-|   ✅   | Desain Login Bernuansa Ekafarm                   | Login Breeze diubah total menyesuaikan palet warna brand           |
-|   ⏳   | Reset Password Mandiri (Karyawan)                | Akan diaktifkan di v0.6.0 melalui Mailtrap (email testing)         |
-|   ⏳   | Jenis Form Lain (Izin, Lembur, Pinjam Fasilitas) | Direncanakan untuk fitur selanjutnya                               |
+![Dashboard HR](docs/dashboard-hr.png)
 
 ---
 
-## 🌿 Highlight v0.5.1
+## 🔄 Alur Persetujuan
 
-- **Dashboard karyawan** kini sepenuhnya dinamis:
-    - Statistik pengajuan berdasarkan status (_menunggu_, _disetujui_, _ditolak_).
-    - Riwayat pengajuan terakhir (limit 5 data).
-- **Middleware `role` tunggal** menggantikan alias terpisah `hr` dan `karyawan`.
-- **Layout profil header baru:** avatar, nama, divisi, dan tanggal di pojok kanan atas.
-- **Tone warna hijau Ekafarm konsisten** di seluruh halaman (login, dashboard, tabel, dark mode).
-- **Route** sudah terbagi rapi:
-    - `/karyawan/dashboard` untuk karyawan.
-    - `/hr/dashboard` untuk HR.
-    - `/cuti/{id}` sementara diarahkan ke halaman daftar cuti.
-
----
-
-## ⚙️ Instalasi & Setup Lokal
-
-### 1️⃣ Clone repositori
-
-```bash
-git clone https://github.com/wahyu043/personalia-ekafarm-prod.git
-cd personalia-ekafarm-prod
+```
+Karyawan mengajukan  →  Atasan divisi  →  HR  →  Disetujui (jatah cuti berkurang)
+                              ↓              ↓
+                           Ditolak        Ditolak
 ```
 
-### 2️⃣ Install dependency backend & frontend
+- Atasan hanya dapat memproses pengajuan dari **divisinya sendiri** (divalidasi di sisi server, bukan hanya disembunyikan di tampilan).
+- Perubahan status hanya sah dari tahap yang sesuai, jadi pengajuan yang sudah diproses tidak bisa ditimpa.
+- HR memberi persetujuan akhir dan dapat mencetak surat cuti dalam format PDF.
+
+---
+
+## 🚀 Fitur
+
+| Status | Fitur | Keterangan |
+| :----: | :---- | :--------- |
+| ✅ | Autentikasi multi-role | Karyawan, Atasan, dan HR, login menggunakan NIP |
+| ✅ | Pengajuan cuti | Hari kerja dihitung otomatis (tanpa Sabtu, Minggu, dan libur nasional) |
+| ✅ | Validasi hak cuti | Aktif setelah 12 bulan masa kerja, dan sisa cuti dicek saat mengajukan |
+| ✅ | Dashboard karyawan | Statistik pengajuan, riwayat, dan sisa cuti tahunan |
+| ✅ | Dashboard atasan | Pengajuan divisi (setujui atau tolak) beserta riwayat |
+| ✅ | Dashboard HR | Rekap global, final approval, riwayat disetujui dan ditolak |
+| ✅ | Cetak surat cuti PDF | Format A4 dengan area tanda tangan dan catatan atasan |
+| ✅ | CRUD data karyawan (HR) | Tambah, ubah, hapus, dan reset password |
+
+---
+
+## 🧪 Menjalankan Demo
+
+Membutuhkan **PHP 8.2+**, **Composer**, **Node.js**, dan **MariaDB/MySQL**.
 
 ```bash
+git clone https://github.com/wahyu043/personalia-agro-sukses-abadi.git
+cd personalia-agro-sukses-abadi
+
 composer install
-npm install
-```
+npm install && npm run build
 
-### 3️⃣ Salin & konfigurasi environment
-
-```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-Edit bagian database sesuai konfigurasi lokal kamu:
+Atur koneksi database di `.env` (database kosong yang sudah dibuat):
 
 ```env
-DB_DATABASE=db_name
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=nama_database
 DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-### 4️⃣ Migrasi database
-
 ```bash
-php artisan migrate
-```
-
-### 5️⃣ Jalankan aplikasi
-
-```bash
-npm run dev
+php artisan migrate --seed
+php artisan storage:link
 php artisan serve
 ```
 
-Akses di browser → [http://127.0.0.1:8000](http://127.0.0.1:8000)
+Buka <http://127.0.0.1:8000>.
 
----
+> Catatan: salah satu migrasi memakai sintaks MySQL/MariaDB, jadi SQLite belum didukung.
+> Seeder demo menolak berjalan di environment `production`.
 
-## 🧱 Struktur Proyek
+### Akun demo
 
-```
-personalia-ekafarm-prod/
-├── app/
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   │   ├── HR/
-│   │   │   └── Karyawan/
-│   │   └── Middleware/
-│   ├── Models/
-│   └── Providers/
-├── resources/
-│   ├── views/
-│   │   ├── hr/
-│   │   ├── karyawan/
-│   │   └── components/
-│   ├── css/app.css
-│   └── js/app.js
-├── routes/web.php
-├── database/migrations/
-├── public/
-└── package.json
-```
+Login menggunakan **NIP**. Semua akun berpassword `password`.
+
+| Peran | NIP | Divisi |
+| :---- | :-- | :----- |
+| HR | `HR` | - |
+| Atasan | `SPV-PROD` | Produksi |
+| Atasan | `SPV-KEU` | Keuangan |
+| Atasan | `SPV-MKT` | Marketing |
+| Karyawan | `99900007` | Produksi |
+| Karyawan | `99900014` | Keuangan |
+| Karyawan | `99900013` | Marketing |
+
+Coba alurnya: login sebagai karyawan dan ajukan cuti, lalu sebagai atasan divisi yang sama untuk menyetujui atau menolak, dan terakhir sebagai HR untuk persetujuan akhir dan cetak PDF.
+
+Password default untuk akun baru dan reset oleh HR diatur lewat `DEFAULT_USER_PASSWORD` di `.env`.
 
 ---
 
 ## 💡 Teknologi
 
-| Komponen            | Versi   | Deskripsi                       |
-| ------------------- | ------- | ------------------------------- |
-| **Laravel**         | 12.x    | Framework backend utama         |
-| **PHP**             | 8.2.24  | Sesuai requirement Laravel 12   |
-| **Node.js**         | 20.19.1 | Build tools (Vite + Tailwind)   |
-| **Tailwind CSS**    | 4.x     | Styling modern berbasis utility |
-| **MySQL / MariaDB** | 5.7+    | Basis data utama                |
-| **Laravel Breeze**  | v2      | Sistem autentikasi dan UI dasar |
-| **DOMPDF**          | v2.x    | Export PDF surat cuti           |
-| **Vite**            | v5      | Compiler CSS & JS modern        |
+| Komponen | Keterangan |
+| :------- | :--------- |
+| **Laravel 12** | Framework backend |
+| **Tailwind CSS 4** + **Vite** | Styling dan build frontend |
+| **Laravel Breeze** | Dasar autentikasi |
+| **DOMPDF** | Ekspor surat cuti ke PDF |
+| **MariaDB / MySQL** | Basis data |
 
 ---
 
-## 🪶 Workflow Pengembangan
+## 🗺️ Roadmap
 
-|   Versi    | Fase                                | Fokus                               |
-| :--------: | :---------------------------------- | :---------------------------------- |
-|   v0.4.3   | UI/UX Consolidation                 | Dashboard seragam HR & Karyawan     |
-|   v0.4.4   | Global Styling                      | Palet & dark mode stabil            |
-|   v0.4.5   | CRUD Karyawan                       | HR bisa kelola data user            |
-|   v0.5.0   | Export PDF                          | Surat cuti resmi A4 final           |
-| **v0.5.1** | Finalisasi Role & Dashboard Dinamis | Data real-time, login selaras brand |
-| ⏳ v0.6.0  | Reset Password Mandiri              | Aktivasi Mailtrap & audit log       |
+- [ ] Notifikasi lewat Telegram dan email
+- [ ] Reset password mandiri (email)
+- [ ] Pengajuan lembur dan peminjaman alat/fasilitas dalam satu aplikasi
+- [ ] Alasan penolakan dan jejak siapa yang menolak
+- [ ] Pemetaan atasan divisi Gudang (`SPV-GUD`)
+
+Riwayat perubahan per versi ada di [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
 ## 👨‍💻 Pengembang
 
-**Wahyu Mahmudiyanto**  
-SEO Specialist & Web Developer at [Ekafarm](https://ekafarm.com)  
-📍 Yogyakarta, Indonesia  
+**Wahyu Mahmudiyanto**
 🌐 [wahyumahmudi.com](https://wahyumahmudi.com)
 
 ---
 
 ## 🧾 Lisensi
 
-Proyek ini bersifat **private** dan digunakan secara internal di lingkungan **CV. Agro Sukses Abadi (Ekafarm)**.  
-Seluruh dokumentasi teknis dapat digunakan sebagai bahan referensi pembelajaran Laravel modern.
-
----
-
-> _“Alhamdulillah, v0.5.2 rampung lebih cepat dari target.”_  
-> — Wahyu Mahmudiyanto, 11 November 2025
+Repositori ini dibagikan sebagai **proyek portofolio** untuk keperluan peninjauan dan referensi. Belum menggunakan lisensi open source, sehingga hak penggunaan ulang tetap pada pengembang.
