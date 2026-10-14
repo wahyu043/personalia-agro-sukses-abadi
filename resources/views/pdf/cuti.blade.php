@@ -100,9 +100,13 @@
     @endphp
 
     <div style="text-align:center; margin-bottom:6px;">
-        <p style="margin:0; font-size:14px; font-weight:bold;">CV. AGRO SUKSES ABADI (EKAFARM)</p>
-        <p style="margin:2px 0; font-size:10px;">Gg. Mawar No.55, Ngoto, Bangunharjo, Kec. Sewon, Kabupaten Bantul, D.I. Yogyakarta 55188</p>
-        <p style="margin:2px 0; font-size:10px;">Telp: (0274) 4293496</p>
+        <p style="margin:0; font-size:14px; font-weight:bold;">{{ mb_strtoupper(config('company.name')) }}</p>
+        @if (config('company.address'))
+        <p style="margin:2px 0; font-size:10px;">{{ config('company.address') }}</p>
+        @endif
+        @if (config('company.phone'))
+        <p style="margin:2px 0; font-size:10px;">Telp: {{ config('company.phone') }}</p>
+        @endif
     </div>
     <hr style="border:1.5px solid #000; margin:6px 0;">
     <h2 style="text-align:center; font-size:14px; margin:4px 0;">FORMULIR PERMOHONAN CUTI</h2>
